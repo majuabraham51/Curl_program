@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+<style>
+#customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+<body>
+
+  <div ng-app="myApp" ng-controller="myCtrl" ng-init="getissues()">
+  <h3>Pending Issues </h3>
+<!--
+<button class="btn btn-primary" ng-click="getissues()">Get Pending Issues</button>
+    <p>Response is:</p>
+-->
+  
+    <table id="customers" border="2">
+	<thead>
+	<th>Ticket Id</th>
+	<th>Type</th>
+	<th>Assigned To</th>
+	<th>Summary</th>
+	<th>Status</th>
+	</thead>
+    <tbody>
+      <tr ng-repeat="issue in issues">
+        <td><a href="https://davinta.atlassian.net/browse/{{issue.key}}" >{{issue.key}}</td>
+        <td><font>
+          {{issue.fields['issuetype'].name}}
+          </font>
+        </td>
+        <td><font>
+          {{issue.fields['assignee'].displayName}}
+          </font>
+        </td>
+        <td><font>
+          {{issue.fields['summary']}}
+          </font>
+        </td>        
+		<td>
+		<font>
+		{{issue.fields['status'].name}}
+		</font>
+		</td>
+      </tr>
+    </tbody>
+    </table>
+    
+  </div>
+
+
+  <script>
+    var app = angular.module('myApp', []);
+    var url ="https://redashboard.davinta.com/sre/curltest.php";
+    app.controller('myCtrl', function ($scope, $http) {
+      $scope.getissues = function () {
+          $http.get(url)
+          .then(function (response) {
+            var issues=response.data;
+            $scope.resdata = issues.issues;
+            $scope.issues = issues.issues;
+          });
+      }
+    });
+  </script>
+
+</body>
+
+</html>
